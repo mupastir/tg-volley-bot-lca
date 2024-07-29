@@ -15,7 +15,7 @@ class Bot(StarletteMiniGram):
         self.openai = openai_
 
     async def handle_update(self, update: MiniGramUpdate) -> None:
-        result: str
+        result: str = "I don't understand you 😔"
 
         match update.text:
             case "/start":
@@ -36,6 +36,5 @@ class Bot(StarletteMiniGram):
             case _:
                 if not update.text.startswith("/"):
                     return None
-                result = "I don't understand you 😔"
 
         await self.reply(update, result)
