@@ -4,7 +4,7 @@ from typing import Optional, Any, List
 
 from pydantic import BaseModel
 
-from models.openai.request import Message
+from app.models.openai.request import Message
 
 
 class Choice(BaseModel):

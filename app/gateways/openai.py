@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from copy import deepcopy
 
 from app.models.openai.response import Answer
-from models.openai.request import Message
+from app.models.openai.request import Message
 
 OAI_V1 = "https://api.openai.com/v1/"
 
@@ -48,7 +48,7 @@ class OpenAI:
         frequency_penalty: Optional[float] = None,
         json: Optional[bool] = None,
         temperature: Optional[float] = None,
-        **payload,
+        **payload: bool,
     ) -> Answer:
         model: str = self._model
         req = {}
@@ -76,8 +76,8 @@ class OpenAI:
         return response
 
     async def easy_complete(
-        self, prompt: str, system_prompt: Optional[str] = None, **kwargs
-    ) -> dict | str:
+        self, prompt: str, system_prompt: Optional[str] = None, **kwargs: bool
+    ) -> str:
         if system_prompt:
             messages = [
                 Message(role="system", content=system_prompt),

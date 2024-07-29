@@ -1,39 +1,41 @@
 from minigram import StarletteMiniGram, MiniGramUpdate
-from starlette.applications import Starlette
-from starlette.routing import Route
 
-from gateways.openai import OpenAI
-from settings import settings
+from logging import getLogger
+
+from app.gateways.openai import OpenAI, OpenAIError
+from app.handlers.help import help_handler
 
 
-class MyStarletteBot(StarletteMiniGram):
-    def __init__(self):
-        super().__init__(settings.tg_bot_token)
-        self.openai_bot = OpenAI(settings.openai_api_key, model=settings.openai_model)
+logger = getLogger(__name__)
 
-    async def handle_update(self, update: MiniGramUpdate) -> dict:
+
+class Bot(StarletteMiniGram):
+    def __init__(self, key: str, openai_: OpenAI) -> None:
+        super().__init__(key)
+        self.openai = openai_
+
+    async def handle_update(self, update: MiniGramUpdate) -> None:
         result: str
+
         match update.text:
             case "/start":
                 result = "Hello from Starlette! 👋"
+            case "/help":
+                result = help_handler()
+            case "ping":
+                result = "pong"
             case "ai!" | "gpt!" | "openai!" | "чат!":
-                result = await self.openai_bot.easy_complete(
-                    "What’s on your mind?",
-                    "You are a chat bot of beach volleyball community.",
-                )
+                try:
+                    result = await self.openai.easy_complete(
+                        "What’s on your mind?",
+                        "You are a chat bot of beach volleyball community.",
+                    )
+                except OpenAIError as e:
+                    logger.error("Failed to get AI response.", exc_info=e)
+
             case _:
+                if not update.text.startswith("/"):
+                    return None
                 result = "I don't understand you 😔"
 
-        print(f"Result: {result}")
-        return await self.reply(update, result)
-
-
-bot = MyStarletteBot()
-bot.set_webhook("https://yourwebsite.com/webhook")
-
-app = Starlette(
-    debug=settings.debug,
-    routes=[
-        Route("/webhook", bot.starlette_handler, methods=["POST"]),
-    ],
-)
+        await self.reply(update, result)
