@@ -49,5 +49,6 @@ class Bot(AsyncMiniGram):
                     result = await handle_action(self, update.text)
                 except ActionNotRecognized:
                     logger.info("Action not recognized.", extra={"text": update.text})
+                    return None
 
         await self.reply(update, result)
