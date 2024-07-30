@@ -19,7 +19,7 @@ class Bot(AsyncMiniGram):
     async def handle_update(self, update: MiniGramUpdate) -> None:
         result: str = "I don't understand you 😔"
 
-        if update.text is not None:
+        if update.text is None:
             logger.warning("Received message.", extra={"update": update})
             return
 
