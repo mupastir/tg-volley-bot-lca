@@ -5,6 +5,8 @@ from logging import getLogger
 from app.gateways.openai import OpenAI, OpenAIError
 from app.handlers.help import help_handler
 from app.handlers.about_handler import about_handler
+from app.handlers.actions.exceptions import ActionNotRecognized
+from app.handlers.actions.action_handler import handle_action
 
 logger = getLogger(__name__)
 
@@ -36,7 +38,9 @@ class Bot(AsyncMiniGram):
                     logger.error("Failed to get AI response.", exc_info=e)
 
             case _:
-                if not update.text.startswith("/"):
-                    return None
+                try:
+                    result = await handle_action(self, update.text)
+                except ActionNotRecognized:
+                    logger.info("Action not recognized.", extra={"text": update.text})
 
         await self.reply(update, result)

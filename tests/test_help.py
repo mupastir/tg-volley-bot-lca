@@ -10,7 +10,7 @@ from app.bot import Bot
 async def test_help_message(
     mock_req: MagicMock, minigram_update_help_message: MiniGramUpdate
 ) -> None:
-    bot = Bot("token", mock.Mock())
+    bot = Bot("token", mock.AsyncMock())
     await bot.handle_update(minigram_update_help_message)
 
     mock_req.assert_called_once_with(
@@ -20,6 +20,7 @@ async def test_help_message(
         text="fact!, oneliner! - to get any random fact about Oleh "
         "or about volleyball or something else\n"
         "ping - respond pong\n"
+        "ai!, gpt!, openai!, чат! - to ask a question to the AI, for example: *ai! How to serve skyball?*\n"
         "rules? - Know the measure and do not force the bot. "
         "If you received a warning *there are too many of you...* "
         "- do not continue and create noise. "
