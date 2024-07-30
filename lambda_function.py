@@ -10,4 +10,3 @@ def lambda_handler(event: dict, context: Any) -> None:
 
     loop = get_event_loop()
     loop.run_until_complete(gather(bot.async_handler(message)))
-    loop.close()

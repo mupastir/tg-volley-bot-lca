@@ -17,5 +17,5 @@ async def test_start_message(
         "sendMessage",
         chat_id=1,
         reply_to_message_id=minigram_update_start_message.message_id,
-        text="Hello from Starlette! 👋",
+        text="Hello. I am an bot assistance for beach volleyball chat! 👋",
     )
