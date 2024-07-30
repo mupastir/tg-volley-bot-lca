@@ -27,7 +27,7 @@ jobs:
           uv --version
           uv pip install --target ./package -r requirements.txt
       - name: zip
-        run:
+        run: |
           cd package
           zip -r bot.zip .
           mv bot.zip ../
