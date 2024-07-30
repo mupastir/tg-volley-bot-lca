@@ -64,7 +64,7 @@ def minigram_update_about_message():
             "message": {
                 "message_id": 4,
                 "date": 1,
-                "text": "fact!",
+                "text": "oneliner!",
                 "chat": {
                     "id": 1,
                     "type": "private",

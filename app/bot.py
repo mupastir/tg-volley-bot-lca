@@ -22,7 +22,7 @@ class Bot(AsyncMiniGram):
                 result = "Hello from Starlette! 👋"
             case "/help":
                 result = help_handler()
-            case "fact!" | "onliner!":
+            case "fact!" | "oneliner!":
                 result = about_handler()
             case "ping":
                 result = "pong"

@@ -17,7 +17,7 @@ async def test_help_message(
         "sendMessage",
         chat_id=1,
         reply_to_message_id=minigram_update_help_message.message_id,
-        text="fact!, onliner! - to get any random fact about Oleh "
+        text="fact!, oneliner! - to get any random fact about Oleh "
         "or about volleyball or something else\n"
         "ping - respond pong\n"
         "rules? - Know the measure and do not force the bot. "
