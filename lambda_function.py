@@ -9,5 +9,5 @@ def lambda_handler(event: dict, context: Any) -> None:
     from asyncio import gather, get_event_loop
 
     loop = get_event_loop()
-    loop.run_until_complete(gather(bot.handle_update(message)))
+    loop.run_until_complete(gather(bot.async_handler(message)))
     loop.close()
