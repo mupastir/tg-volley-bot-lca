@@ -45,6 +45,9 @@ class Bot(AsyncMiniGram):
                     logger.error("Failed to get AI response.", exc_info=e)
 
             case _:
+                if update.text.startswith("/"):
+                    logger.info("Command not recognized.", extra={"text": update.text})
+                    await self.reply(update, result)
                 try:
                     result = await handle_action(self, update.text)
                 except ActionNotRecognized:
