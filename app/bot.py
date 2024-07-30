@@ -21,7 +21,7 @@ class Bot(AsyncMiniGram):
 
         match update.text:
             case "/start":
-                result = "Hello. I am an bot assistance for beach volleyball chat! 👋"
+                result = "Hello. I am an bot assistance for beach volleyball chat! 👋\nPress /help to see available commands."
             case "/help":
                 result = help_handler()
             case "fact!" | "oneliner!":
