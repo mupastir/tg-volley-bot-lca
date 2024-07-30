@@ -4,7 +4,7 @@ from logging import getLogger
 
 from app.gateways.openai import OpenAI, OpenAIError
 from app.handlers.help import help_handler
-
+from app.handlers.about_handler import about_handler
 
 logger = getLogger(__name__)
 
@@ -22,6 +22,8 @@ class Bot(StarletteMiniGram):
                 result = "Hello from Starlette! 👋"
             case "/help":
                 result = help_handler()
+            case "fact!" | "onliner!":
+                result = about_handler()
             case "ping":
                 result = "pong"
             case "ai!" | "gpt!" | "openai!" | "чат!":

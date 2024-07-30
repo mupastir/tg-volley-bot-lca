@@ -54,3 +54,21 @@ def minigram_update_wrong_command():
             },
         }
     )
+
+
+@pytest.fixture
+def minigram_update_about_message():
+    return MiniGramUpdate(
+        data={
+            "update_id": 1,
+            "message": {
+                "message_id": 4,
+                "date": 1,
+                "text": "fact!",
+                "chat": {
+                    "id": 1,
+                    "type": "private",
+                },
+            },
+        }
+    )
