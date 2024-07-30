@@ -1,4 +1,4 @@
-from minigram import StarletteMiniGram, MiniGramUpdate
+from minigram import MiniGramUpdate, AsyncMiniGram
 
 from logging import getLogger
 
@@ -9,7 +9,7 @@ from app.handlers.about_handler import about_handler
 logger = getLogger(__name__)
 
 
-class Bot(StarletteMiniGram):
+class Bot(AsyncMiniGram):
     def __init__(self, key: str, openai_: OpenAI) -> None:
         super().__init__(key)
         self.openai = openai_

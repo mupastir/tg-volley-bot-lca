@@ -1,0 +1,43 @@
+name: deploy to lambda
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy_source:
+    name: build and deploy lambda
+    strategy:
+      matrix:
+        python-version: [3.12]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup python ${{ matrix.node-version }}
+        uses: actions/setup-python@v5.0.0
+        with:
+          python-version: ${{ matrix.node-version }}
+      - name: Install deps
+        run: |
+          pip install uv
+          uv venv
+          . .venv/bin/activate
+          uv --version
+          uv pip install --target ./package -r requirements.txt
+      - name: zip
+        run:
+          cd package
+          zip -r bot.zip .
+          mv bot.zip ../
+          cd ..
+          zip -ur bot.zip * -x '*package*'
+      - name: default deploy
+        uses: appleboy/lambda-action@master
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: eu-west-1
+          function_name: tg-volley-bot-lca
+          zip_file: bot.zip
