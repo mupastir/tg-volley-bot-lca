@@ -47,7 +47,7 @@ jobs:
 
     - name: install deps
       run: |
-          pip install ruff
+          pip install ruff mypy
 
     - name: run ruff check
       run: ruff check
