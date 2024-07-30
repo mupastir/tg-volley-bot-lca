@@ -4,6 +4,10 @@ from typing import Any
 from app.main import bot
 
 
-async def lambda_handler(event: dict, context: Any) -> None:
+def lambda_handler(event: dict, context: Any) -> None:
     message = json.loads(event["body"])
-    await bot.handle_update(message)
+    from asyncio import gather, get_event_loop
+
+    loop = get_event_loop()
+    loop.run_until_complete(gather(bot.handle_update(message)))
+    loop.close()
