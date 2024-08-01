@@ -22,7 +22,10 @@ aioboto_session = aioboto3.Session()
 
 
 async def ask_ai_handler(
-    openai_: OpenAI, question: str, user: dict, super_users: list[str] | None = None
+    openai_: OpenAI,
+    question: str,
+    user: dict,
+    super_users: tuple[str, ...] | None = None,
 ) -> str:
     q = question.split("!", 1)[1].strip()
     if len(q) < 5 or "idle" in q:  # do not respond on too short questions or idle

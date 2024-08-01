@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     openai_api_key: str
     openai_model: str
     tg_bot_token: str
-    super_users: list[int] = []
+    super_users: list[str] = []
 
 
 load_dotenv()
