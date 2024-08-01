@@ -1,4 +1,4 @@
-from minigram import MiniGramUpdate, AsyncMiniGram
+from minigram import AsyncMiniGram, MiniGramUpdate
 
 from logging import getLogger
 
@@ -12,9 +12,10 @@ logger = getLogger(__name__)
 
 
 class Bot(AsyncMiniGram):
-    def __init__(self, key: str, openai_: OpenAI) -> None:
+    def __init__(self, key: str, openai_: OpenAI, super_users: list[str]) -> None:
         super().__init__(key)
         self.openai = openai_
+        self.super_users = tuple(super_users)
 
     async def handle_update(self, update: MiniGramUpdate) -> None:
         result: str = "I don't understand you 😔"
@@ -49,7 +50,7 @@ class Bot(AsyncMiniGram):
                     logger.info("Command not recognized.", extra={"text": update.text})
                     await self.reply(update, result)
                 try:
-                    result = await handle_action(self, update.text)
+                    result = await handle_action(self, update.text, update.user)
                 except ActionNotRecognized:
                     logger.info("Action not recognized.", extra={"text": update.text})
                     return None

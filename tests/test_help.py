@@ -10,7 +10,7 @@ from app.bot import Bot
 async def test_help_message(
     mock_req: MagicMock, minigram_update_help_message: MiniGramUpdate
 ) -> None:
-    bot = Bot("token", mock.AsyncMock())
+    bot = Bot("token", mock.AsyncMock(), ["mupastir"])
     await bot.handle_update(minigram_update_help_message)
 
     mock_req.assert_called_once_with(

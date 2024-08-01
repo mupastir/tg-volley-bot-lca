@@ -10,7 +10,7 @@ from app.bot import Bot
 async def test_wrong_command(
     mock_req: MagicMock, minigram_update_wrong_command: MiniGramUpdate
 ) -> None:
-    bot = Bot("token", mock.Mock())
+    bot = Bot("token", mock.AsyncMock(), ["mupastir"])
     await bot.handle_update(minigram_update_wrong_command)
 
     mock_req.assert_called_once_with(

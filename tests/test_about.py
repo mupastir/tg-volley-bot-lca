@@ -10,7 +10,7 @@ from app.bot import Bot
 async def test_about_message(
     mock_req: MagicMock, minigram_update_about_message: MiniGramUpdate
 ) -> None:
-    bot = Bot("token", mock.Mock())
+    bot = Bot("token", mock.AsyncMock(), ["mupastir"])
     await bot.handle_update(minigram_update_about_message)
 
     assert "sendMessage" in mock_req.call_args.args
