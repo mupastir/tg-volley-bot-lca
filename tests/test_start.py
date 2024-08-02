@@ -1,7 +1,7 @@
 from unittest import mock
 from unittest.mock import MagicMock
 
-from minigram import MiniGramUpdate
+from app import MiniGramUpdate
 
 from app.bot import Bot
 

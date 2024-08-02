@@ -1,7 +1,8 @@
 from datetime import datetime
 
 import pytest
-from minigram import MiniGramUpdate
+
+from app import MiniGramUpdate
 from random import choice as randchoice
 
 from app.handlers.actions.ask_ai_handler import OPENAI_MODIFIERS

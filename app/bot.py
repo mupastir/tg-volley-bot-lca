@@ -1,4 +1,4 @@
-from minigram import AsyncMiniGram, MiniGramUpdate
+from app import AsyncMiniGram, MiniGramUpdate
 
 from logging import getLogger
 
