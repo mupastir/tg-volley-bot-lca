@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 import aioboto3
 from datetime import datetime, timedelta
 
@@ -63,7 +65,11 @@ async def ask_ai_handler(
 
     await save_new_message(
         UserQuestionRecord(
-            user_id=user["id"], question=q, answer=result_message, created_at=now
+            id=uuid4(),
+            user_id=user["id"],
+            question=q,
+            answer=result_message,
+            created_at=now,
         )
     )
     return result_message
