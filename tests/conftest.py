@@ -26,6 +26,7 @@ def minigram_update_start_message():
                 "user": {
                     "id": 1,
                     "username": "testuser",
+                    "is_bot": False,
                 },
             },
         }
@@ -48,6 +49,7 @@ def minigram_update_help_message():
                 "user": {
                     "id": 1,
                     "username": "testuser",
+                    "is_bot": False,
                 },
             },
         }
@@ -70,6 +72,7 @@ def minigram_update_wrong_command():
                 "user": {
                     "id": 1,
                     "username": "testuser",
+                    "is_bot": False,
                 },
             },
         }
@@ -92,6 +95,7 @@ def minigram_update_about_message():
                 "user": {
                     "id": 1,
                     "username": "testuser",
+                    "is_bot": False,
                 },
             },
         }
@@ -114,6 +118,7 @@ def minigram_update_ask_openai_message():
                 "user": {
                     "id": 1,
                     "username": "testuser",
+                    "is_bot": False,
                 },
             },
         }
@@ -137,6 +142,7 @@ def minigram_update_ask_openai_short_message():
                 "user": {
                     "id": 1,
                     "username": "testuser",
+                    "is_bot": False,
                 },
             },
         }
