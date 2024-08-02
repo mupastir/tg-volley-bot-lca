@@ -56,12 +56,18 @@ async def ask_ai_handler(
             messages.append(Message(role="user", content=message.question))
             messages.append(Message(role="assistant", content=message.answer))
 
-        answer = await openai_.complete(messages=messages, max_tokens=1000)
+        answer = await openai_.complete(
+            messages=messages, max_tokens=1000, temperature=1.1
+        )
         if not answer.choices:
             return "No response from OpenAI"
         result_message = answer.choices[0].message.content
     else:
-        result_message = await openai_.easy_complete(q, SYSTEM_PROMPT)
+        result_message = await openai_.easy_complete(
+            q,
+            SYSTEM_PROMPT,
+            temperature=1.1,  # type: ignore
+        )
 
     await save_new_message(
         UserQuestionRecord(
@@ -70,6 +76,7 @@ async def ask_ai_handler(
             question=q,
             answer=result_message,
             created_at=now,
+            expires_at=int((now + timedelta(days=5)).timestamp()),
         )
     )
     return result_message

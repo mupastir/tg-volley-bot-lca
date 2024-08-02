@@ -22,3 +22,4 @@ class UserQuestionRecord(BaseModel):
     question: str
     answer: str
     created_at: datetime
+    expires_at: int

@@ -30,6 +30,7 @@ async def test_ask_openai_message_with_no_history(
             "You are a chat bot of beach volleyball community. "
             "You answer with no more than 50 words, should be in English language"
         ),
+        temperature=1.1,
     )
     save_new_message.assert_called_once()
     mock_req.assert_called_once_with(
@@ -58,6 +59,7 @@ async def test_ask_openai_message_with_history(
             question="How to serve skyball?",
             answer="Skyball is a serve that is hit with the knuckles",
             created_at=datetime.now(),
+            expires_at=1700000,
         )
     ]
     bot.openai.complete.return_value = openai_response
@@ -92,6 +94,7 @@ async def test_ask_openai_message_with_history_reached_limits(
             question="How to serve skyball?",
             answer="Skyball is a serve that is hit with the knuckles",
             created_at=datetime.now(),
+            expires_at=1700000,
         )
         for _ in range(10)
     ]
@@ -128,6 +131,7 @@ async def test_ask_openai_message_with_history_reached_limits_as_superuser(
             question="How to serve skyball?",
             answer="Skyball is a serve that is hit with the knuckles",
             created_at=datetime.now(),
+            expires_at=1700000,
         )
         for _ in range(10)
     ]
