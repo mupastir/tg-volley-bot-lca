@@ -1,6 +1,7 @@
 from datetime import datetime
 from unittest import mock
 from unittest.mock import MagicMock
+from uuid import uuid4
 
 from app import MiniGramUpdate
 
@@ -52,6 +53,7 @@ async def test_ask_openai_message_with_history(
     bot = Bot("token", mock.AsyncMock(), [])
     get_last_messages.return_value = [
         UserQuestionRecord(
+            id=uuid4(),
             user_id=1,
             question="How to serve skyball?",
             answer="Skyball is a serve that is hit with the knuckles",
@@ -85,6 +87,7 @@ async def test_ask_openai_message_with_history_reached_limits(
     bot = Bot("token", mock.AsyncMock(), [])
     get_last_messages.return_value = [
         UserQuestionRecord(
+            id=uuid4(),
             user_id=1,
             question="How to serve skyball?",
             answer="Skyball is a serve that is hit with the knuckles",
@@ -120,6 +123,7 @@ async def test_ask_openai_message_with_history_reached_limits_as_superuser(
     bot = Bot("token", mock.AsyncMock(), ["testuser"])
     get_last_messages.return_value = [
         UserQuestionRecord(
+            id=uuid4(),
             user_id=1,
             question="How to serve skyball?",
             answer="Skyball is a serve that is hit with the knuckles",
