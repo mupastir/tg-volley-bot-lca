@@ -72,7 +72,7 @@ async def ask_ai_handler(
 async def get_last_messages(user_id: int) -> list[UserQuestionRecord]:
     async with aioboto_session.resource("dynamodb") as dynamodb:
         table = await dynamodb.Table("tg_volley_bot_openai_requests")
-        response = table.scan(KeyConditionExpression=Key("user_id").eq(user_id))
+        response = await table.scan(KeyConditionExpression=Key("user_id").eq(user_id))
     return [UserQuestionRecord(**item) for item in response]
 
 
