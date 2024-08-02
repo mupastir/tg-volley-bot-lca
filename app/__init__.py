@@ -2,8 +2,8 @@
 from unittest import mock
 
 
-def find_spec(name: str):
-    if name == "aiohttp":
+def find_spec(name: str) -> str | None:
+    if name in ("aiohttp", "starlette"):
         return None
     return name
 
