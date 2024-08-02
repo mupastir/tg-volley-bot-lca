@@ -71,6 +71,9 @@ def minigram_update_wrong_command():
                 },
                 "user": {
                     "id": 1,
+                },
+                "from": {
+                    "id": 1,
                     "username": "testuser",
                     "is_bot": False,
                 },
@@ -93,6 +96,9 @@ def minigram_update_about_message():
                     "type": "private",
                 },
                 "user": {
+                    "id": 1,
+                },
+                "from": {
                     "id": 1,
                     "username": "testuser",
                     "is_bot": False,
@@ -117,6 +123,9 @@ def minigram_update_ask_openai_message():
                 },
                 "user": {
                     "id": 1,
+                },
+                "from": {
+                    "id": 1,
                     "username": "testuser",
                     "is_bot": False,
                 },
@@ -140,6 +149,9 @@ def minigram_update_ask_openai_short_message():
                     "type": "private",
                 },
                 "user": {
+                    "id": 1,
+                },
+                "from": {
                     "id": 1,
                     "username": "testuser",
                     "is_bot": False,

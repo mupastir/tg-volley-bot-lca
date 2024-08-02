@@ -20,7 +20,7 @@ class Bot(AsyncMiniGram):
     async def handle_update(self, update: MiniGramUpdate) -> None:
         result: str = "I don't understand you 😔"
 
-        if update.text is None or update.user["is_bot"]:
+        if update.text is None or update.from_user.get("is_bot"):
             logger.warning("Received message.", extra={"update": update})
             return
 
@@ -50,7 +50,7 @@ class Bot(AsyncMiniGram):
                     logger.info("Command not recognized.", extra={"text": update.text})
                     await self.reply(update, result)
                 try:
-                    result = await handle_action(self, update.text, update.user)
+                    result = await handle_action(self, update.text, update.from_user)
                 except ActionNotRecognized:
                     logger.info("Action not recognized.", extra={"text": update.text})
                     return None
