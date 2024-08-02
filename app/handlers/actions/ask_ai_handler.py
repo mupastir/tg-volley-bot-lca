@@ -1,7 +1,7 @@
 import aioboto3
 from datetime import datetime, timedelta
 
-from boto3.dynamodb.conditions import Key
+from boto3.dynamodb.conditions import Attr
 
 from app.gateways.openai import OpenAI
 from app.models.openai.record import UserQuestionRecord
@@ -72,7 +72,7 @@ async def ask_ai_handler(
 async def get_last_messages(user_id: int) -> list[UserQuestionRecord]:
     async with aioboto_session.resource("dynamodb") as dynamodb:
         table = await dynamodb.Table("tg_volley_bot_openai_requests")
-        response = await table.scan(KeyConditionExpression=Key("user_id").eq(user_id))
+        response = await table.scan(FilterExpression=Attr("user_id").eq(user_id))
     return [UserQuestionRecord(**item) for item in response]
 
 
