@@ -73,7 +73,7 @@ async def get_last_messages(user_id: int) -> list[UserQuestionRecord]:
     async with aioboto_session.resource("dynamodb") as dynamodb:
         table = await dynamodb.Table("tg_volley_bot_openai_requests")
         response = await table.scan(FilterExpression=Attr("user_id").eq(user_id))
-    return [UserQuestionRecord(**item) for item in response]
+    return [UserQuestionRecord(**item) for item in response["Items"]]
 
 
 async def save_new_message(question_record: UserQuestionRecord) -> None:
