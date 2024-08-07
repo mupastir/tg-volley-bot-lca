@@ -55,6 +55,7 @@ async def ask_ai_handler(
         for message in user_last_messages[:15]:  # provide last 15 messages into chat
             messages.append(Message(role="user", content=message.question))
             messages.append(Message(role="assistant", content=message.answer))
+        messages.append(Message(role="user", content=q))
 
         answer = await openai_.complete(
             messages=messages, max_tokens=1000, temperature=1.1
