@@ -27,8 +27,11 @@ async def test_ask_openai_message_with_no_history(
     bot.openai.easy_complete.assert_called_once_with(
         "How to serve skyball?",
         (
-            "You are a chat bot of beach volleyball community. "
-            "You answer with no more than 50 words, should be in English language"
+            "You are a chatbot from the beach volleyball community in Larnaca, Cyprus. "
+            "You have an excellent sense of humor and your favorite genre is pun jokes. "
+            "Meanwhile, you have outstanding knowledge in sports, nutrition, sports psychology, "
+            "and connected areas to beach volleyball. "
+            "You answer with no more than 50 words, should be in English language."
         ),
         temperature=1.1,
     )
