@@ -20,7 +20,7 @@ class OpenAI:
         self,
         api_key: str,
         organization: Optional[str] = None,
-        model: str = "gpt-3.5-turbo",
+        model: str = "gpt-4o-mini",
     ):
         self._model = model
         self._auth_header = deepcopy(
