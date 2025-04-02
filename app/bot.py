@@ -49,6 +49,7 @@ class Bot(AsyncMiniGram):
                 if update.text.startswith("/"):
                     logger.info("Command not recognized.", extra={"text": update.text})
                     await self.reply(update, result)
+                    return None
                 try:
                     result = await handle_action(self, update.text, update.from_user)
                 except ActionNotRecognized:

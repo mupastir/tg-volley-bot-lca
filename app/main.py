@@ -1,5 +1,6 @@
 from app.bot import Bot
 from app.gateways.openai import OpenAI
+
 from app.settings import settings
 
 openai = OpenAI(settings.openai_api_key, model=settings.openai_model)

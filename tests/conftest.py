@@ -83,6 +83,58 @@ def minigram_update_wrong_command():
 
 
 @pytest.fixture
+def minigram_ukr_msg():
+    return MiniGramUpdate(
+        data={
+            "update_id": 1,
+            "message": {
+                "message_id": 3,
+                "date": 1,
+                "text": "Давайте пограємо Мішиним мячем",
+                "chat": {
+                    "id": 1,
+                    "type": "private",
+                },
+                "user": {
+                    "id": 1,
+                },
+                "from": {
+                    "id": 1,
+                    "username": "testuser",
+                    "is_bot": False,
+                },
+            },
+        }
+    )
+
+
+@pytest.fixture
+def minigram_en_msg():
+    return MiniGramUpdate(
+        data={
+            "update_id": 1,
+            "message": {
+                "message_id": 3,
+                "date": 1,
+                "text": "Let's play with Misha's Ball",
+                "chat": {
+                    "id": 1,
+                    "type": "private",
+                },
+                "user": {
+                    "id": 1,
+                },
+                "from": {
+                    "id": 1,
+                    "username": "testuser",
+                    "is_bot": False,
+                },
+            },
+        }
+    )
+
+
+@pytest.fixture
 def minigram_update_about_message():
     return MiniGramUpdate(
         data={
