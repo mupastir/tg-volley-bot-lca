@@ -12,4 +12,4 @@ class Settings(BaseSettings):
 
 load_dotenv()
 
-settings = Settings()
+settings = Settings()  # type: ignore
