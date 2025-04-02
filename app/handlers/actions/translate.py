@@ -1,4 +1,4 @@
-from misc.translator import translator
+from app.misc.translator import translator
 
 
 def translate_handler(q: str) -> str:
