@@ -2,214 +2,44 @@ from datetime import datetime
 
 import pytest
 
-from app import MiniGramUpdate
 from random import choice as randchoice
 
 from app.handlers.actions.ask_ai_handler import OPENAI_MODIFIERS
 from app.models.openai.request import Message
 from app.models.openai.response import Answer, Choice, Usage
+from tests.helpers import get_update_event
 
 
 @pytest.fixture
 def minigram_update_start_message():
-    return MiniGramUpdate(
-        data={
-            "update_id": 1,
-            "message": {
-                "message_id": 1,
-                "date": 1,
-                "text": "/start",
-                "chat": {
-                    "id": 1,
-                    "type": "private",
-                },
-                "user": {
-                    "id": 1,
-                    "username": "testuser",
-                    "is_bot": False,
-                },
-            },
-        }
-    )
+    return get_update_event("/start")
 
 
 @pytest.fixture
 def minigram_update_help_message():
-    return MiniGramUpdate(
-        data={
-            "update_id": 1,
-            "message": {
-                "message_id": 2,
-                "date": 1,
-                "text": "/help",
-                "chat": {
-                    "id": 1,
-                    "type": "private",
-                },
-                "user": {
-                    "id": 1,
-                    "username": "testuser",
-                    "is_bot": False,
-                },
-            },
-        }
-    )
+    return get_update_event("/help")
 
 
 @pytest.fixture
 def minigram_update_wrong_command():
-    return MiniGramUpdate(
-        data={
-            "update_id": 1,
-            "message": {
-                "message_id": 3,
-                "date": 1,
-                "text": "/abracadabra",
-                "chat": {
-                    "id": 1,
-                    "type": "private",
-                },
-                "user": {
-                    "id": 1,
-                },
-                "from": {
-                    "id": 1,
-                    "username": "testuser",
-                    "is_bot": False,
-                },
-            },
-        }
-    )
-
-
-@pytest.fixture
-def minigram_ukr_msg():
-    return MiniGramUpdate(
-        data={
-            "update_id": 1,
-            "message": {
-                "message_id": 3,
-                "date": 1,
-                "text": "Давайте пограємо Мішиним мячем",
-                "chat": {
-                    "id": 1,
-                    "type": "private",
-                },
-                "user": {
-                    "id": 1,
-                },
-                "from": {
-                    "id": 1,
-                    "username": "testuser",
-                    "is_bot": False,
-                },
-            },
-        }
-    )
-
-
-@pytest.fixture
-def minigram_en_msg():
-    return MiniGramUpdate(
-        data={
-            "update_id": 1,
-            "message": {
-                "message_id": 3,
-                "date": 1,
-                "text": "Let's play with Misha's Ball",
-                "chat": {
-                    "id": 1,
-                    "type": "private",
-                },
-                "user": {
-                    "id": 1,
-                },
-                "from": {
-                    "id": 1,
-                    "username": "testuser",
-                    "is_bot": False,
-                },
-            },
-        }
-    )
+    return get_update_event("/abracadabra")
 
 
 @pytest.fixture
 def minigram_update_about_message():
-    return MiniGramUpdate(
-        data={
-            "update_id": 1,
-            "message": {
-                "message_id": 4,
-                "date": 1,
-                "text": randchoice(["fact!", "oneliner!"]),
-                "chat": {
-                    "id": 1,
-                    "type": "private",
-                },
-                "user": {
-                    "id": 1,
-                },
-                "from": {
-                    "id": 1,
-                    "username": "testuser",
-                    "is_bot": False,
-                },
-            },
-        }
-    )
+    return get_update_event(randchoice(["fact!", "oneliner!"]))
 
 
 @pytest.fixture
 def minigram_update_ask_openai_message():
-    return MiniGramUpdate(
-        data={
-            "update_id": 1,
-            "message": {
-                "message_id": 5,
-                "date": 1,
-                "text": f"{randchoice(OPENAI_MODIFIERS)} How to serve skyball?",
-                "chat": {
-                    "id": 1,
-                    "type": "private",
-                },
-                "user": {
-                    "id": 1,
-                },
-                "from": {
-                    "id": 1,
-                    "username": "testuser",
-                    "is_bot": False,
-                },
-            },
-        }
-    )
+    return get_update_event(f"{randchoice(OPENAI_MODIFIERS)} How to serve skyball?")
 
 
 @pytest.fixture
 def minigram_update_ask_openai_short_message():
     short_messages = ["How?", "idle"]
-    return MiniGramUpdate(
-        data={
-            "update_id": 1,
-            "message": {
-                "message_id": 5,
-                "date": 1,
-                "text": f"{randchoice(OPENAI_MODIFIERS)} {randchoice(short_messages)}",
-                "chat": {
-                    "id": 1,
-                    "type": "private",
-                },
-                "user": {
-                    "id": 1,
-                },
-                "from": {
-                    "id": 1,
-                    "username": "testuser",
-                    "is_bot": False,
-                },
-            },
-        }
+    return get_update_event(
+        f"{randchoice(OPENAI_MODIFIERS)} {randchoice(short_messages)}"
     )
 
 

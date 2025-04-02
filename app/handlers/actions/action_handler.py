@@ -11,10 +11,13 @@ if TYPE_CHECKING:
 async def handle_action(bot: "Bot", message: str, user: dict) -> str:
     if any(message.startswith(modifier) for modifier in OPENAI_MODIFIERS):
         return await ask_ai_handler(
-            openai_=bot.openai, question=message, user=user, super_users=bot.super_users
+            openai_=bot.openai,
+            question=message,
+            user=user,
+            super_users=bot.super_users,
         )
 
     translated_text = translate_handler(message)
-    if translated_text != message:
+    if translated_text:
         return translated_text
     raise ActionNotRecognized()

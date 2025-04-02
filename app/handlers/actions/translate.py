@@ -1,5 +1,143 @@
 from app.misc.translator import translator
 
 
-def translate_handler(q: str) -> str:
-    return translator.translate(q)
+CYRILLIC_SYMBOLS = {
+    "У",
+    "К",
+    "п",
+    "Е",
+    "Б",
+    "И",
+    "к",
+    "Э",
+    "Ш",
+    "Й",
+    "а",
+    "ш",
+    "Ц",
+    "в",
+    "З",
+    "д",
+    "ф",
+    "ъ",
+    "щ",
+    "Ж",
+    "О",
+    "е",
+    "и",
+    "Х",
+    "А",
+    "у",
+    "с",
+    "э",
+    "В",
+    "Ё",
+    "Т",
+    "г",
+    "л",
+    "Ъ",
+    "П",
+    "Г",
+    "ь",
+    "з",
+    "Я",
+    "Н",
+    "т",
+    "Щ",
+    "н",
+    "б",
+    "М",
+    "о",
+    "С",
+    "Ф",
+    "м",
+    "х",
+    "Д",
+    "Р",
+    "Ч",
+    "Ю",
+    "ц",
+    "Л",
+    "ч",
+    "Ы",
+    "ю",
+    "я",
+    "ж",
+    "ё",
+    "й",
+    "р",
+    "ы",
+    "Ь",
+}
+GREEK_SYMBOLS = {
+    "Π",
+    "ο",
+    "Χ",
+    "ι",
+    "ε",
+    "Ξ",
+    "μ",
+    "Ν",
+    "τ",
+    "Γ",
+    "ω",
+    "Ο",
+    "Η",
+    "Τ",
+    "Α",
+    "Β",
+    "χ",
+    "Ε",
+    "π",
+    "ξ",
+    "Ω",
+    "α",
+    "β",
+    "ρ",
+    "Φ",
+    "δ",
+    "Ρ",
+    "λ",
+    "υ",
+    "r",
+    "Ψ",
+    "ν",
+    "κ",
+    "ς",
+    "Ι",
+    "θ",
+    "γ",
+    "σ",
+    "Υ",
+    "Λ",
+    "Δ",
+    "o",
+    "Κ",
+    "η",
+    "Μ",
+    "ζ",
+    "Θ",
+    "ψ",
+    "φ",
+    "Ζ",
+    "Σ",
+}
+
+
+def translate_handler(q: str) -> str | None:
+    q_set = set(q)
+    if q_set & CYRILLIC_SYMBOLS:
+        translator.from_lang = "ru"
+        translator.to_lang = "en"
+    elif q_set & GREEK_SYMBOLS:
+        translator.from_lang = "el"
+        translator.to_lang = "el"
+    else:
+        translator.from_lang = "en"
+        translator.to_lang = "en"
+
+    translated = translator.translate(q)
+    if translated != q:
+        return translated
+
+    return None
