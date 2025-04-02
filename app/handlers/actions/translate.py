@@ -1,4 +1,5 @@
-def translate_handler(q: str) -> str:
-    from app.main import translator
+from misc.translator import translator
 
+
+def translate_handler(q: str) -> str:
     return translator.translate(q)
