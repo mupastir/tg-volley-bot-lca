@@ -16,5 +16,5 @@ async def handle_action(bot: "Bot", message: str, user: dict) -> str:
 
     translated_text = translate_handler(message)
     if translated_text != message:
-        return f"<i> {translated_text} </i>"
+        return translated_text
     raise ActionNotRecognized()

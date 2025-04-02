@@ -15,5 +15,5 @@ async def test_translate_from_ukr_msg(
         "sendMessage",
         chat_id=1,
         reply_to_message_id=minigram_ukr_msg.message_id,
-        text="<i> Let's play with Misha's Ball </i>",
+        text="Let's play with Misha's Ball",
     )
