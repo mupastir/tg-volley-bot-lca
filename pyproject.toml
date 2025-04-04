@@ -1,0 +1,14 @@
+[project]
+name = "tg-volley-bot-lca"
+version = "0.1.0"
+requires-python = ">= 3.12"
+description = "Telegram bot for beach volleyball community from Larnaca, Cyprus. A bot is written to be ran in AWS lambda."
+readme = "README.md"
+license-files = ["LICENSE"]
+
+authors = [
+  {name = "Oleh Perlovskyi", email = "mupastir@gmail.com"}
+]
+maintainers = [
+  {name = "Oleh Perlovskyi", email = "mupastir@gmail.com"}
+]
