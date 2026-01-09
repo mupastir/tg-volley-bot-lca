@@ -20,7 +20,7 @@ class Bot(AsyncMiniGram):
     async def handle_update(self, update: MiniGramUpdate) -> None:
         result: str = "I don't understand you 😔"
 
-        if update.text is None or update.from_user.get("is_bot"):
+        if update.text is None or update.from_user.get("is_bot") or update.update_type != "message":
             logger.warning("Received message.", extra={"update": update})
             return
 
