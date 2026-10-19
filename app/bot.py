@@ -3,7 +3,7 @@ from logging import getLogger
 from langfuse import get_client, propagate_attributes
 
 from app import AsyncMiniGram, MiniGramUpdate
-from app.gateways.openai import OpenAI, OpenAIError
+from app.gateways.gemini import Gemini, GeminiError
 from app.handlers.about_handler import about_handler
 from app.handlers.actions.action_handler import handle_action
 from app.handlers.actions.exceptions import ActionNotRecognized
@@ -13,9 +13,9 @@ logger = getLogger(__name__)
 
 
 class Bot(AsyncMiniGram):
-    def __init__(self, key: str, openai_: OpenAI, super_users: list[str]) -> None:
+    def __init__(self, key: str, llm: Gemini, super_users: list[str]) -> None:
         super().__init__(key)
-        self.openai = openai_
+        self.llm = llm
         self.super_users = tuple(super_users)
 
     async def handle_update(self, update: MiniGramUpdate) -> None:
@@ -47,12 +47,12 @@ class Bot(AsyncMiniGram):
                         trace_name="start-conversation",
                     ):
                         try:
-                            result = await self.openai.easy_complete(
+                            result = await self.llm.easy_complete(
                                 "What’s on your mind?",
                                 "You are a chat bot of beach volleyball community.",
                                 generation_name="generate-conversation-starter",
                             )
-                        except OpenAIError as e:
+                        except GeminiError as e:
                             logger.error("Failed to get AI response.", exc_info=e)
                     root_span.update(output=result)
 

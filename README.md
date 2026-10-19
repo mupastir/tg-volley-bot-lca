@@ -26,7 +26,7 @@ A Telegram bot designed to support the beach volleyball community in Larnaca, Cy
 
 - **Python 3.12+**
 - **minigram-py**: Lightweight Telegram bot framework
-- **OpenAI API**: Provides AI responses (GPT models)
+- **Google Gemini API** (`google-genai`): Provides AI responses
 - **AWS Lambda**: Serverless hosting
 - **AWS DynamoDB**: Stores conversation history
 - **Translation API**: Handles message translation
@@ -36,7 +36,7 @@ A Telegram bot designed to support the beach volleyball community in Larnaca, Cy
 ### Prerequisites
 
 - Python 3.12 or higher
-- An OpenAI API key
+- A Gemini API key (create one in [Google AI Studio](https://aistudio.google.com/apikey))
 - A Telegram bot token (obtained from [@BotFather](https://t.me/BotFather))
 - AWS account (for production deployment)
 
@@ -55,8 +55,8 @@ A Telegram bot designed to support the beach volleyball community in Larnaca, Cy
 
 3. Create a `.env` file in the project root with the following variables:
    ```
-   openai_api_key=your_openai_api_key
-   openai_model=gpt-4o-mini
+   gemini_api_key=your_gemini_api_key
+   gemini_model=gemini-3.8-flash
    tg_bot_token=your_telegram_bot_token
    super_users=["username1", "username2"]
    ```

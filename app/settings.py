@@ -4,8 +4,8 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     debug: bool = False
-    openai_api_key: str
-    openai_model: str
+    gemini_api_key: str
+    gemini_model: str = "gemini-3.8-flash"
     tg_bot_token: str
     super_users: list[str] = []
 

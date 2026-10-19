@@ -1,11 +1,9 @@
-from datetime import datetime
 from random import choice as randchoice
 
 import pytest
+from google.genai import types
 
-from app.handlers.actions.ask_ai_handler import OPENAI_MODIFIERS
-from app.models.openai.request import Message
-from app.models.openai.response import Answer, Choice, Usage
+from app.handlers.actions.ask_ai_handler import AI_MODIFIERS
 from tests.helpers import get_update_event
 
 
@@ -30,33 +28,29 @@ def minigram_update_about_message():
 
 
 @pytest.fixture
-def minigram_update_ask_openai_message():
-    return get_update_event(f"{randchoice(OPENAI_MODIFIERS)} How to serve skyball?")
+def minigram_update_ask_ai_message():
+    return get_update_event(f"{randchoice(AI_MODIFIERS)} How to serve skyball?")
 
 
 @pytest.fixture
-def minigram_update_ask_openai_short_message():
+def minigram_update_ask_ai_short_message():
     short_messages = ["How?", "idle"]
     return get_update_event(
-        f"{randchoice(OPENAI_MODIFIERS)} {randchoice(short_messages)}"
+        f"{randchoice(AI_MODIFIERS)} {randchoice(short_messages)}"
     )
 
 
 @pytest.fixture
-def openai_response():
-    return Answer(
-        id="1",
-        object="",
-        choices=[
-            Choice(
-                index=0,
-                message=Message(role="assistant", content="Answer from OpenAI"),
-                logprobs=None,
-                finish_reason=None,
+def gemini_response():
+    return types.GenerateContentResponse(
+        candidates=[
+            types.Candidate(
+                content=types.Content(role="model", parts=[types.Part(text="Answer from AI")]),
+                finish_reason=types.FinishReason.STOP,
             )
         ],
-        created=datetime.now(),
-        model="",
-        system_fingerprint=None,
-        usage=Usage(prompt_tokens=0, completion_tokens=0, total_tokens=0),
+        model_version="gemini-3.8-flash",
+        usage_metadata=types.GenerateContentResponseUsageMetadata(
+            prompt_token_count=0, candidates_token_count=0, total_token_count=0
+        ),
     )

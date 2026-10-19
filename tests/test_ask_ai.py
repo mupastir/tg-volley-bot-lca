@@ -3,27 +3,28 @@ from unittest import mock
 from unittest.mock import MagicMock
 from uuid import uuid4
 
+from google.genai import types
+
 from app import MiniGramUpdate
 from app.bot import Bot
-from app.models.openai.record import UserQuestionRecord
-from app.models.openai.response import Answer
+from app.models.ai.record import UserQuestionRecord
 
 
 @mock.patch("app.handlers.actions.ask_ai_handler.get_last_messages")
 @mock.patch("app.handlers.actions.ask_ai_handler.save_new_message")
 @mock.patch("app.bot.Bot.req")
-async def test_ask_openai_message_with_no_history(
+async def test_ask_ai_message_with_no_history(
     mock_req: MagicMock,
     save_new_message: MagicMock,
     get_last_messages: MagicMock,
-    minigram_update_ask_openai_message: MiniGramUpdate,
+    minigram_update_ask_ai_message: MiniGramUpdate,
 ) -> None:
     bot = Bot("token", mock.AsyncMock(), [])
     get_last_messages.return_value = []
-    bot.openai.easy_complete.return_value = "Answer from OpenAI"
-    await bot.handle_update(minigram_update_ask_openai_message)
+    bot.llm.easy_complete.return_value = "Answer from AI"
+    await bot.handle_update(minigram_update_ask_ai_message)
 
-    bot.openai.easy_complete.assert_called_once_with(
+    bot.llm.easy_complete.assert_called_once_with(
         "How to serve skyball?",
         (
             "You are a chatbot from the beach volleyball community in Larnaca, Cyprus. "
@@ -39,20 +40,20 @@ async def test_ask_openai_message_with_no_history(
     mock_req.assert_called_once_with(
         "sendMessage",
         chat_id=1,
-        reply_to_message_id=minigram_update_ask_openai_message.message_id,
-        text="Answer from OpenAI",
+        reply_to_message_id=minigram_update_ask_ai_message.message_id,
+        text="Answer from AI",
     )
 
 
 @mock.patch("app.handlers.actions.ask_ai_handler.get_last_messages")
 @mock.patch("app.handlers.actions.ask_ai_handler.save_new_message")
 @mock.patch("app.bot.Bot.req")
-async def test_ask_openai_message_with_history(
+async def test_ask_ai_message_with_history(
     mock_req: MagicMock,
     save_new_message: MagicMock,
     get_last_messages: mock.AsyncMock,
-    minigram_update_ask_openai_message: MiniGramUpdate,
-    openai_response: Answer,
+    minigram_update_ask_ai_message: MiniGramUpdate,
+    gemini_response: types.GenerateContentResponse,
 ) -> None:
     bot = Bot("token", mock.AsyncMock(), [])
     get_last_messages.return_value = [
@@ -65,29 +66,29 @@ async def test_ask_openai_message_with_history(
             expires_at=1700000,
         )
     ]
-    bot.openai.complete.return_value = openai_response
-    await bot.handle_update(minigram_update_ask_openai_message)
+    bot.llm.complete.return_value = gemini_response
+    await bot.handle_update(minigram_update_ask_ai_message)
 
-    bot.openai.complete.assert_called_once()
-    bot.openai.easy_complete.assert_not_called()
+    bot.llm.complete.assert_called_once()
+    bot.llm.easy_complete.assert_not_called()
     save_new_message.assert_called_once()
     mock_req.assert_called_once_with(
         "sendMessage",
         chat_id=1,
-        reply_to_message_id=minigram_update_ask_openai_message.message_id,
-        text="Answer from OpenAI",
+        reply_to_message_id=minigram_update_ask_ai_message.message_id,
+        text="Answer from AI",
     )
 
 
 @mock.patch("app.handlers.actions.ask_ai_handler.get_last_messages")
 @mock.patch("app.handlers.actions.ask_ai_handler.save_new_message")
 @mock.patch("app.bot.Bot.req")
-async def test_ask_openai_message_with_history_reached_limits(
+async def test_ask_ai_message_with_history_reached_limits(
     mock_req: MagicMock,
     save_new_message: MagicMock,
     get_last_messages: mock.AsyncMock,
-    minigram_update_ask_openai_message: MiniGramUpdate,
-    openai_response: Answer,
+    minigram_update_ask_ai_message: MiniGramUpdate,
+    gemini_response: types.GenerateContentResponse,
 ) -> None:
     bot = Bot("token", mock.AsyncMock(), [])
     get_last_messages.return_value = [
@@ -101,16 +102,16 @@ async def test_ask_openai_message_with_history_reached_limits(
         )
         for _ in range(10)
     ]
-    bot.openai.complete.return_value = openai_response
-    await bot.handle_update(minigram_update_ask_openai_message)
+    bot.llm.complete.return_value = gemini_response
+    await bot.handle_update(minigram_update_ask_ai_message)
 
-    bot.openai.complete.assert_not_called()
-    bot.openai.easy_complete.assert_not_called()
+    bot.llm.complete.assert_not_called()
+    bot.llm.easy_complete.assert_not_called()
     save_new_message.assert_not_called()
     mock_req.assert_called_once_with(
         "sendMessage",
         chat_id=1,
-        reply_to_message_id=minigram_update_ask_openai_message.message_id,
+        reply_to_message_id=minigram_update_ask_ai_message.message_id,
         text="You have reached the limit of 5 questions per day. "
         "Please wait some time maybe your limit would be updated soon.",
     )
@@ -119,12 +120,12 @@ async def test_ask_openai_message_with_history_reached_limits(
 @mock.patch("app.handlers.actions.ask_ai_handler.get_last_messages")
 @mock.patch("app.handlers.actions.ask_ai_handler.save_new_message")
 @mock.patch("app.bot.Bot.req")
-async def test_ask_openai_message_with_history_reached_limits_as_superuser(
+async def test_ask_ai_message_with_history_reached_limits_as_superuser(
     mock_req: MagicMock,
     save_new_message: MagicMock,
     get_last_messages: mock.AsyncMock,
-    minigram_update_ask_openai_message: MiniGramUpdate,
-    openai_response: Answer,
+    minigram_update_ask_ai_message: MiniGramUpdate,
+    gemini_response: types.GenerateContentResponse,
 ) -> None:
     bot = Bot("token", mock.AsyncMock(), ["testuser"])
     get_last_messages.return_value = [
@@ -138,42 +139,42 @@ async def test_ask_openai_message_with_history_reached_limits_as_superuser(
         )
         for _ in range(10)
     ]
-    bot.openai.complete.return_value = openai_response
-    await bot.handle_update(minigram_update_ask_openai_message)
+    bot.llm.complete.return_value = gemini_response
+    await bot.handle_update(minigram_update_ask_ai_message)
 
-    bot.openai.complete.assert_called_once()
-    bot.openai.easy_complete.assert_not_called()
+    bot.llm.complete.assert_called_once()
+    bot.llm.easy_complete.assert_not_called()
     save_new_message.assert_called_once()
     mock_req.assert_called_once_with(
         "sendMessage",
         chat_id=1,
-        reply_to_message_id=minigram_update_ask_openai_message.message_id,
-        text="Answer from OpenAI",
+        reply_to_message_id=minigram_update_ask_ai_message.message_id,
+        text="Answer from AI",
     )
 
 
 @mock.patch("app.handlers.actions.ask_ai_handler.get_last_messages")
 @mock.patch("app.handlers.actions.ask_ai_handler.save_new_message")
 @mock.patch("app.bot.Bot.req")
-async def test_ask_openai_short_message(
+async def test_ask_ai_short_message(
     mock_req: MagicMock,
     save_new_message: MagicMock,
     get_last_messages: mock.AsyncMock,
-    minigram_update_ask_openai_short_message: MiniGramUpdate,
-    openai_response: Answer,
+    minigram_update_ask_ai_short_message: MiniGramUpdate,
+    gemini_response: types.GenerateContentResponse,
 ) -> None:
     bot = Bot("token", mock.AsyncMock(), ["mupastir"])
-    bot.openai.complete.return_value = openai_response
-    await bot.handle_update(minigram_update_ask_openai_short_message)
+    bot.llm.complete.return_value = gemini_response
+    await bot.handle_update(minigram_update_ask_ai_short_message)
 
-    bot.openai.complete.assert_not_called()
-    bot.openai.easy_complete.assert_not_called()
+    bot.llm.complete.assert_not_called()
+    bot.llm.easy_complete.assert_not_called()
     get_last_messages.assert_not_called()
     save_new_message.assert_not_called()
     mock_req.assert_called_once_with(
         "sendMessage",
         chat_id=1,
-        reply_to_message_id=minigram_update_ask_openai_short_message.message_id,
+        reply_to_message_id=minigram_update_ask_ai_short_message.message_id,
         text="Please ask a more specific question. "
         "Maybe your question is too short or contains a word that is not allowed.",
     )

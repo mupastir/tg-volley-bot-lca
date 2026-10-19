@@ -1,6 +1,6 @@
 from app.bot import Bot
-from app.gateways.openai import OpenAI
+from app.gateways.gemini import Gemini
 from app.settings import settings
 
-openai = OpenAI(settings.openai_api_key, model=settings.openai_model)
-bot = Bot(settings.tg_bot_token, openai, settings.super_users)
+gemini = Gemini(settings.gemini_api_key, model=settings.gemini_model)
+bot = Bot(settings.tg_bot_token, gemini, settings.super_users)

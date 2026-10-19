@@ -5,11 +5,11 @@ import aioboto3
 from boto3.dynamodb.conditions import Attr
 from langfuse import get_client, propagate_attributes
 
-from app.gateways.openai import OpenAI
-from app.models.openai.record import UserQuestionRecord
-from app.models.openai.request import Message
+from app.gateways.gemini import Gemini
+from app.models.ai.record import UserQuestionRecord
+from app.models.ai.request import Message
 
-OPENAI_MODIFIERS = (
+AI_MODIFIERS = (
     "ai!",
     "gpt!",
     "openai!",
@@ -27,7 +27,7 @@ aioboto_session = aioboto3.Session()
 
 
 async def ask_ai_handler(
-    openai_: OpenAI,
+    llm: Gemini,
     question: str,
     user: dict,
     super_users: tuple[str, ...] | None = None,
@@ -43,13 +43,13 @@ async def ask_ai_handler(
             tags=["ask-ai"],
             trace_name="answer-question",
         ):
-            answer, outcome = await _answer_question(openai_, q, user, super_users)
+            answer, outcome = await _answer_question(llm, q, user, super_users)
         root_span.update(output=answer, metadata={"outcome": outcome})
     return answer
 
 
 async def _answer_question(
-    openai_: OpenAI,
+    llm: Gemini,
     q: str,
     user: dict,
     super_users: tuple[str, ...] | None,
@@ -81,17 +81,17 @@ async def _answer_question(
             messages.append(Message(role="assistant", content=message.answer))
         messages.append(Message(role="user", content=q))
 
-        answer = await openai_.complete(
+        answer = await llm.complete(
             messages=messages,
             max_tokens=1000,
             temperature=1.1,
             generation_name="generate-answer",
         )
-        if not answer.choices:
-            return "No response from OpenAI", "empty_response"
-        result_message = answer.choices[0].message.content
+        if not answer.text:
+            return "No response from AI", "empty_response"
+        result_message = answer.text
     else:
-        result_message = await openai_.easy_complete(
+        result_message = await llm.easy_complete(
             q,
             SYSTEM_PROMPT,
             temperature=1.1,
