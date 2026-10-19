@@ -10,7 +10,7 @@ jobs:
     name: build and deploy lambda
     strategy:
       matrix:
-        python-version: [3.12]
+        python-version: [3.13]
     runs-on: ubuntu-latest
 
     steps:
