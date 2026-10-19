@@ -4,6 +4,7 @@ import aioboto3
 from datetime import datetime, timedelta
 
 from boto3.dynamodb.conditions import Attr
+from langfuse import get_client, propagate_attributes
 
 from app.gateways.openai import OpenAI
 from app.models.openai.record import UserQuestionRecord
@@ -33,11 +34,32 @@ async def ask_ai_handler(
     super_users: tuple[str, ...] | None = None,
 ) -> str:
     q = question.split("!", 1)[1].strip()
+    with get_client().start_as_current_observation(
+        as_type="span", name="answer-question", input=q
+    ) as root_span:
+        # One session per user per day, mirroring the 1-day window used for chat history.
+        with propagate_attributes(
+            user_id=str(user["id"]),
+            session_id=f"tg-{user['id']}-{datetime.now():%Y-%m-%d}",
+            tags=["ask-ai"],
+            trace_name="answer-question",
+        ):
+            answer, outcome = await _answer_question(openai_, q, user, super_users)
+        root_span.update(output=answer, metadata={"outcome": outcome})
+    return answer
+
+
+async def _answer_question(
+    openai_: OpenAI,
+    q: str,
+    user: dict,
+    super_users: tuple[str, ...] | None,
+) -> tuple[str, str]:
     if len(q) < 5 or "idle" in q:  # do not respond on too short questions or idle
         return (
             "Please ask a more specific question. "
             "Maybe your question is too short or contains a word that is not allowed."
-        )
+        ), "rejected_question"
     now = datetime.now()
     one_day_before = now - timedelta(days=1)
 
@@ -51,7 +73,7 @@ async def ask_ai_handler(
         return (
             "You have reached the limit of 5 questions per day. "
             "Please wait some time maybe your limit would be updated soon."
-        )
+        ), "rate_limited"
 
     if user_last_day_messages:
         messages = [Message(role="system", content=SYSTEM_PROMPT)]
@@ -61,16 +83,20 @@ async def ask_ai_handler(
         messages.append(Message(role="user", content=q))
 
         answer = await openai_.complete(
-            messages=messages, max_tokens=1000, temperature=1.1
+            messages=messages,
+            max_tokens=1000,
+            temperature=1.1,
+            generation_name="generate-answer",
         )
         if not answer.choices:
-            return "No response from OpenAI"
+            return "No response from OpenAI", "empty_response"
         result_message = answer.choices[0].message.content
     else:
         result_message = await openai_.easy_complete(
             q,
             SYSTEM_PROMPT,
-            temperature=1.1,  # type: ignore
+            temperature=1.1,
+            generation_name="generate-answer",
         )
 
     await save_new_message(
@@ -83,7 +109,7 @@ async def ask_ai_handler(
             expires_at=int((now + timedelta(days=5)).timestamp()),
         )
     )
-    return result_message
+    return result_message, "answered"
 
 
 async def get_last_messages(user_id: int) -> list[UserQuestionRecord]:

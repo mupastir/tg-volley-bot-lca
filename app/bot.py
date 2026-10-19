@@ -2,6 +2,8 @@ from app import AsyncMiniGram, MiniGramUpdate
 
 from logging import getLogger
 
+from langfuse import get_client, propagate_attributes
+
 from app.gateways.openai import OpenAI, OpenAIError
 from app.handlers.help import help_handler
 from app.handlers.about_handler import about_handler
@@ -37,13 +39,23 @@ class Bot(AsyncMiniGram):
             case "ping":
                 result = "pong"
             case "ai!" | "gpt!" | "openai!" | "чат!":
-                try:
-                    result = await self.openai.easy_complete(
-                        "What’s on your mind?",
-                        "You are a chat bot of beach volleyball community.",
-                    )
-                except OpenAIError as e:
-                    logger.error("Failed to get AI response.", exc_info=e)
+                with get_client().start_as_current_observation(
+                    as_type="span", name="start-conversation", input=update.text
+                ) as root_span:
+                    with propagate_attributes(
+                        user_id=str(update.from_user["id"]),
+                        tags=["start-conversation"],
+                        trace_name="start-conversation",
+                    ):
+                        try:
+                            result = await self.openai.easy_complete(
+                                "What’s on your mind?",
+                                "You are a chat bot of beach volleyball community.",
+                                generation_name="generate-conversation-starter",
+                            )
+                        except OpenAIError as e:
+                            logger.error("Failed to get AI response.", exc_info=e)
+                    root_span.update(output=result)
 
             case _:
                 if update.text.startswith("/"):

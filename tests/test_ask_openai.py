@@ -34,6 +34,7 @@ async def test_ask_openai_message_with_no_history(
             "You answer with no more than 50 words, should be in English language."
         ),
         temperature=1.1,
+        generation_name="generate-answer",
     )
     save_new_message.assert_called_once()
     mock_req.assert_called_once_with(

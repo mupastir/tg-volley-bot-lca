@@ -1,7 +1,9 @@
 import httpx
-from typing import Optional, List, Type, TypeVar
+from typing import Any, Optional, List, Type, TypeVar
 from pydantic import BaseModel
 from copy import deepcopy
+
+from langfuse import get_client
 
 from app.models.openai.response import Answer
 from app.models.openai.request import Message
@@ -48,6 +50,7 @@ class OpenAI:
         frequency_penalty: Optional[float] = None,
         json: Optional[bool] = None,
         temperature: Optional[float] = None,
+        generation_name: str = "chat-completion",
         **payload: bool,
     ) -> Answer:
         model: str = self._model
@@ -72,11 +75,34 @@ class OpenAI:
             req_messages.append(msg.model_dump())
 
         req["messages"] = req_messages
-        response = await self.call("chat/completions", Answer, req)
+
+        model_parameters = {k: v for k, v in req.items() if k not in ("model", "messages")}
+        with get_client().start_as_current_observation(
+            as_type="generation",
+            name=generation_name,
+            model=model,
+            model_parameters=model_parameters,
+            input=req_messages,
+        ) as generation:
+            try:
+                response = await self.call("chat/completions", Answer, req)
+            except OpenAIError as e:
+                generation.update(level="ERROR", status_message=str(e))
+                raise
+            generation.update(
+                model=response.model,
+                output=response.choices[0].message.model_dump() if response.choices else None,
+                usage_details=response.usage.to_langfuse(),
+                metadata={
+                    "openai_response_id": response.id,
+                    "finish_reason": response.choices[0].finish_reason if response.choices else None,
+                    "system_fingerprint": response.system_fingerprint,
+                },
+            )
         return response
 
     async def easy_complete(
-        self, prompt: str, system_prompt: Optional[str] = None, **kwargs: bool
+        self, prompt: str, system_prompt: Optional[str] = None, **kwargs: Any
     ) -> str:
         if system_prompt:
             messages = [

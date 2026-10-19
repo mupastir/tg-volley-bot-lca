@@ -27,10 +27,25 @@ class Choice(BaseModel):
             return None
 
 
+class PromptTokensDetails(BaseModel):
+    cached_tokens: int = 0
+
+
 class Usage(BaseModel):
     prompt_tokens: int
     completion_tokens: int
     total_tokens: int
+    prompt_tokens_details: Optional[PromptTokensDetails] = None
+
+    def to_langfuse(self) -> dict[str, int]:
+        # Langfuse usage buckets are exclusive, while OpenAI prompt_tokens includes cached tokens.
+        cached = self.prompt_tokens_details.cached_tokens if self.prompt_tokens_details else 0
+        return {
+            "input": self.prompt_tokens - cached,
+            "input_cached_tokens": cached,
+            "output": self.completion_tokens,
+            "total": self.total_tokens,
+        }
 
 
 class Answer(BaseModel):

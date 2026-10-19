@@ -5,3 +5,4 @@ pydantic==2.8.2
 pydantic-settings==2.3.4
 python-dotenv==1.0.1
 translate==3.6.1
+langfuse==5.0.2
