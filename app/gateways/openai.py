@@ -1,12 +1,12 @@
-import httpx
-from typing import Any, Optional, List, Type, TypeVar
-from pydantic import BaseModel
 from copy import deepcopy
+from typing import Any, TypeVar
 
+import httpx
 from langfuse import get_client
+from pydantic import BaseModel
 
-from app.models.openai.response import Answer
 from app.models.openai.request import Message
+from app.models.openai.response import Answer
 
 OAI_V1 = "https://api.openai.com/v1/"
 
@@ -21,7 +21,7 @@ class OpenAI:
     def __init__(
         self,
         api_key: str,
-        organization: Optional[str] = None,
+        organization: str | None = None,
         model: str = "gpt-4o-mini",
     ):
         self._model = model
@@ -32,7 +32,9 @@ class OpenAI:
             self._auth_header["OpenAI-Organization"] = organization
         self._api_key = api_key
 
-    async def call(self, endpoint: str, return_type: Type[T], payload: dict = {}) -> T:
+    async def call(self, endpoint: str, return_type: type[T], payload: dict | None = None) -> T:
+        if payload is None:
+            payload = {}
         url = OAI_V1 + endpoint
         headers = self._auth_header
         async with httpx.AsyncClient(timeout=180) as client:
@@ -44,12 +46,12 @@ class OpenAI:
 
     async def complete(
         self,
-        messages: List[Message],
-        max_tokens: Optional[int] = None,
-        presence_penalty: Optional[float] = None,
-        frequency_penalty: Optional[float] = None,
-        json: Optional[bool] = None,
-        temperature: Optional[float] = None,
+        messages: list[Message],
+        max_tokens: int | None = None,
+        presence_penalty: float | None = None,
+        frequency_penalty: float | None = None,
+        json: bool | None = None,
+        temperature: float | None = None,
         generation_name: str = "chat-completion",
         **payload: bool,
     ) -> Answer:
@@ -102,7 +104,7 @@ class OpenAI:
         return response
 
     async def easy_complete(
-        self, prompt: str, system_prompt: Optional[str] = None, **kwargs: Any
+        self, prompt: str, system_prompt: str | None = None, **kwargs: Any
     ) -> str:
         if system_prompt:
             messages = [

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Annotated, Any
 
-from pydantic import BaseModel, Field, AfterValidator, PlainSerializer, UUID4
+from pydantic import UUID4, AfterValidator, BaseModel, Field, PlainSerializer
 
 
 def to_str(value: Any) -> str:

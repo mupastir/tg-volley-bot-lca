@@ -1,6 +1,5 @@
 from app.misc.translator import translator
 
-
 CYRILLIC_SYMBOLS = {
     "У",
     "К",

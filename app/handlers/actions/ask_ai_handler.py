@@ -1,8 +1,7 @@
+from datetime import datetime, timedelta
 from uuid import uuid4
 
 import aioboto3
-from datetime import datetime, timedelta
-
 from boto3.dynamodb.conditions import Attr
 from langfuse import get_client, propagate_attributes
 

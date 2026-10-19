@@ -1,8 +1,7 @@
 from datetime import datetime
+from random import choice as randchoice
 
 import pytest
-
-from random import choice as randchoice
 
 from app.handlers.actions.ask_ai_handler import OPENAI_MODIFIERS
 from app.models.openai.request import Message

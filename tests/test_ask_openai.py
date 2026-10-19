@@ -4,7 +4,6 @@ from unittest.mock import MagicMock
 from uuid import uuid4
 
 from app import MiniGramUpdate
-
 from app.bot import Bot
 from app.models.openai.record import UserQuestionRecord
 from app.models.openai.response import Answer

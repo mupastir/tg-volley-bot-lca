@@ -1,6 +1,6 @@
 from datetime import datetime
-from json import loads, JSONDecodeError
-from typing import Optional, Any, List
+from json import JSONDecodeError, loads
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -10,11 +10,11 @@ from app.models.openai.request import Message
 class Choice(BaseModel):
     index: int
     message: Message
-    logprobs: Optional[Any]
-    finish_reason: Optional[str]
+    logprobs: Any | None
+    finish_reason: str | None
 
     @property
-    def parsed(self) -> Optional[dict]:
+    def parsed(self) -> dict | None:
         if not self.message:
             return None
         try:
@@ -35,7 +35,7 @@ class Usage(BaseModel):
     prompt_tokens: int
     completion_tokens: int
     total_tokens: int
-    prompt_tokens_details: Optional[PromptTokensDetails] = None
+    prompt_tokens_details: PromptTokensDetails | None = None
 
     def to_langfuse(self) -> dict[str, int]:
         # Langfuse usage buckets are exclusive, while OpenAI prompt_tokens includes cached tokens.
@@ -51,8 +51,8 @@ class Usage(BaseModel):
 class Answer(BaseModel):
     id: str
     object: str
-    choices: List[Choice]
+    choices: list[Choice]
     created: datetime
     model: str
-    system_fingerprint: Optional[str]
+    system_fingerprint: str | None
     usage: Usage

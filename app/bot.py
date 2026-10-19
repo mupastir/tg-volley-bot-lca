@@ -1,14 +1,13 @@
-from app import AsyncMiniGram, MiniGramUpdate
-
 from logging import getLogger
 
 from langfuse import get_client, propagate_attributes
 
+from app import AsyncMiniGram, MiniGramUpdate
 from app.gateways.openai import OpenAI, OpenAIError
-from app.handlers.help import help_handler
 from app.handlers.about_handler import about_handler
-from app.handlers.actions.exceptions import ActionNotRecognized
 from app.handlers.actions.action_handler import handle_action
+from app.handlers.actions.exceptions import ActionNotRecognized
+from app.handlers.help import help_handler
 
 logger = getLogger(__name__)
 
@@ -61,11 +60,11 @@ class Bot(AsyncMiniGram):
                 if update.text.startswith("/"):
                     logger.info("Command not recognized.", extra={"text": update.text})
                     await self.reply(update, result)
-                    return None
+                    return
                 try:
                     result = await handle_action(self, update.text, update.from_user)
                 except ActionNotRecognized:
                     logger.info("Action not recognized.", extra={"text": update.text})
-                    return None
+                    return
 
         await self.reply(update, result)

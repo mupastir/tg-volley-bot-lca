@@ -1,5 +1,6 @@
 from unittest import mock
 from unittest.mock import MagicMock
+
 from app import MiniGramUpdate
 from app.bot import Bot
 
